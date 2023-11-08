@@ -1,0 +1,16 @@
+<div class="container">
+    <div class="wrapper">
+      <h1 class="message">{{ MESSAGE }}</h1>
+      <div class="input-wrapper">
+        <input
+        #Otps
+        type="number" 
+        *ngFor="let digit of digits; let i =index"
+        inputmode="numeric"
+        [value]="digit"
+        (keydown)="onInput(i, $event)"
+        />
+      </div>
+      <h3>Opt will be valid for : {{ display }} {{ message }}</h3>
+    </div>
+</div>
