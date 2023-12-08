@@ -1,38 +1,49 @@
-import { Directive, Input } from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, Host, Input, Optional, ViewChild, ViewContainerRef } from '@angular/core';
 import { AbstractControl, EmailValidator, NG_VALIDATORS, ValidationErrors, Validator } from '@angular/forms';
 import { LoginwithotpService } from './Services/loginwithotp.service';
+import { LoginComponent } from './login/login.component';
+import { elementAt } from 'rxjs';
 
 @Directive({
   selector: '[appValidateUser]',
   providers:[{provide: NG_VALIDATORS, useExisting:ValidateUserDirective, multi:true}]
 })
 export class ValidateUserDirective implements Validator {
-// @Input('appValidateUser') UserEmail = '';
+private _parent : LoginComponent;
 invalidUser : boolean =  false;
 
-  constructor(private loginWithOtp : LoginwithotpService) { 
+  constructor(@Optional() @Host() parent:LoginComponent) { 
+    this._parent = parent;
   }
 
   validate(control: AbstractControl): ValidationErrors | null {
     
-    return  this.forbiddenNameValidator(control.value);
+    return  this.forbiddenNameValidator(control );
   }
-  forbiddenNameValidator(email : string) : ValidationErrors | null
-  {
-    const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
+  forbiddenNameValidator(emailCpntrol : AbstractControl)   {
+    const emailRegex = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@(gmail||outlook)+(?:\.[com]+)*$/;
+    const email = emailCpntrol.value;
     const valid = emailRegex.test(email);
-    if(!valid)
-    return {invalidUser : {
-      message : 'Entered email address is not in correct format'
-    }}
+    let isValidUser = false;
+    
     if(!email) return null;
     if(email.length === 0) return null;
-  if(this.loginWithOtp.validateUserEmail(email)) return null
-  else return {
-    invalidUser : {
-      message : 'Entered email address is not regsitered with us. please try with registered email address'
-    }
-  };    
-    return null;
+    if(!valid)
+    {
+      console.log("Marking Email as dirty")
+      emailCpntrol.markAsTouched();
+      emailCpntrol.markAsDirty();
+     this._parent.canGenerateOtp = true;
+     this._parent.errorMessage =  'Entered email address is not in correct format';
+  }
+  else  
+  {
+    emailCpntrol.markAsTouched();
+    emailCpntrol.markAsDirty();
+    this._parent.errorMessage =  '';
+    this._parent.canGenerateOtp = false;
+    this._parent.isValidUser = true;
+  }
+    return null
   }
 }

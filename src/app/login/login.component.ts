@@ -21,9 +21,19 @@ constructor(private router : Router,private loginService : LoginwithotpService){
 
 loginWithOtp()
 {
-   this.router.navigate(['/confirmOtp'])
+  if(this.isValidUser)
+  {
+ this.loginService.validateUserEmail(this.UserEmail).
+ subscribe({next : (response)=>
+  {
+  console.log(response);
+  if(response && response.sucess)
+  {
+    this.router.navigate(['/confirmOtp'])
+  }
+ }});
+  }
 }
-
 }
 
 

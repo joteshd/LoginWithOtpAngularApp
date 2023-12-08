@@ -1,8 +1,13 @@
 <form class="login" name="authForm">
 	<div class="login__field">
 		<i class="login__icon fas fa-user"></i>
-		<input type="email" name="email" [(ngModel)]="UserEmail" #userEmailModel="ngModel" class="login__input"  placeholder="Enter Email Id" appValidateUser>
-		<div *ngIf="isValidUser && (userEmailModel.touched || userEmailModel.dirty) && userEmailModel.errors?.invalidUser" class="alert" >{{errorMessage}}</div>
+		<input type="email" 
+		name="email" 
+		[(ngModel)]="UserEmail" 
+		#userEmailModel="ngModel" 
+		class="login__input"  
+		placeholder="Enter Email Id" appValidateUser />
+		<div *ngIf="!isValidUser && (userEmailModel.touched || userEmailModel.dirty)" class="alert" >{{errorMessage}}</div>
 	</div>
 	<button class="button login__submit" name="buttnSubmit" (click)="loginWithOtp()" [disabled]="canGenerateOtp" [class.buttondisbled]="canGenerateOtp==true">
 		<span class="button__text">Login With OTP</span>

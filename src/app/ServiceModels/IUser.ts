@@ -4,7 +4,8 @@ export interface IUser {
     UserlastName : string,
     IsLoginWithOpt : boolean,
     IsUserAuthenticated : boolean,
-    isMobileNumber : boolean
+    isMobileNumber : boolean,
+    Email : string
 }
 
 export interface IUserOtpValidator
